@@ -1,5 +1,8 @@
 # SuperCalendar
 ## ChangeLog
+* 发布1.6 稳定版
+* 发布1.5 修改了一些BUG
+* 发布1.4稳定版
 * 清除了dev污染
 * 添加手动切换上一月下一月功能
 * 解决神奇的日历尺寸问题，确保日历尺寸正确
@@ -85,12 +88,12 @@ RecyclerView的layout_behavior为com.ldf.calendar.behavior.RecyclerViewBehavior
 
 
 ```java
-	CustomDayView customDayView = new CustomDayView(
-        	context , R.layout.custom_day);
-	calendarAdapter = new CalendarViewAdapter(
-                context ,
-                onSelectDateListener ,
-                Calendar.MONTH_TYPE ,
+	CustomDayView customDayView = new CustomDayView(context, R.layout.custom_day);
+        calendarAdapter = new CalendarViewAdapter(
+                context,
+                onSelectDateListener,
+                CalendarAttr.CalendarType.MONTH,
+                CalendarAttr.WeekArrayType.Monday,
                 customDayView);
 ```
 #### 初始化View
@@ -107,12 +110,12 @@ RecyclerView的layout_behavior为com.ldf.calendar.behavior.RecyclerViewBehavior
     
     private void initCalendarView() {
         initListener();
-        CustomDayView customDayView = new CustomDayView(
-        	context , R.layout.custom_day);
-		calendarAdapter = new CalendarViewAdapter(
-                context ,
-                onSelectDateListener ,
-                Calendar.MONTH_TYPE ,
+        CustomDayView customDayView = new CustomDayView(context, R.layout.custom_day);
+        calendarAdapter = new CalendarViewAdapter(
+                context,
+                onSelectDateListener,
+                CalendarAttr.CalendarType.MONTH,
+                CalendarAttr.WeekArrayType.Monday,
                 customDayView);
         initMarkData();
         initMonthPager();
@@ -203,7 +206,7 @@ Step 2. Add the dependency
 
 ```groovy
 	dependencies {
-	        compile 'com.github.MagicMashRoom:SuperCalendar:v1.3.1'
+	        compile 'com.github.MagicMashRoom:SuperCalendar:1.6'
 	}
 
 ```

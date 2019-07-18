@@ -60,28 +60,28 @@ public class CalendarRenderer {
         if (col >= Const.TOTAL_COL || row >= Const.TOTAL_ROW)
             return;
         if (weeks[row] != null) {
-            if (attr.getCalendarType() == CalendarAttr.CalendayType.MONTH) {
+            if (attr.getCalendarType() == CalendarAttr.CalendarType.MONTH) {
                 if (weeks[row].days[col].getState() == State.CURRENT_MONTH) {
                     weeks[row].days[col].setState(State.SELECT);
                     selectedDate = weeks[row].days[col].getDate();
-                    CalendarViewAdapter.saveDate(selectedDate);
+                    CalendarViewAdapter.saveSelectedDate(selectedDate);
                     onSelectDateListener.onSelectDate(selectedDate);
                     seedDate = selectedDate;
                 } else if (weeks[row].days[col].getState() == State.PAST_MONTH) {
                     selectedDate = weeks[row].days[col].getDate();
-                    CalendarViewAdapter.saveDate(selectedDate);
+                    CalendarViewAdapter.saveSelectedDate(selectedDate);
                     onSelectDateListener.onSelectOtherMonth(-1);
                     onSelectDateListener.onSelectDate(selectedDate);
                 } else if (weeks[row].days[col].getState() == State.NEXT_MONTH) {
                     selectedDate = weeks[row].days[col].getDate();
-                    CalendarViewAdapter.saveDate(selectedDate);
+                    CalendarViewAdapter.saveSelectedDate(selectedDate);
                     onSelectDateListener.onSelectOtherMonth(1);
                     onSelectDateListener.onSelectDate(selectedDate);
                 }
             } else {
                 weeks[row].days[col].setState(State.SELECT);
                 selectedDate = weeks[row].days[col].getDate();
-                CalendarViewAdapter.saveDate(selectedDate);
+                CalendarViewAdapter.saveSelectedDate(selectedDate);
                 onSelectDateListener.onSelectDate(selectedDate);
                 seedDate = selectedDate;
             }
@@ -96,7 +96,7 @@ public class CalendarRenderer {
      */
     public void updateWeek(int rowIndex) {
         CalendarDate currentWeekLastDay;
-        if (CalendarViewAdapter.weekArrayType == 1) {
+        if (attr.getWeekArrayType() == CalendarAttr.WeekArrayType.Sunday) {
             currentWeekLastDay = Utils.getSaturday(seedDate);
         } else {
             currentWeekLastDay = Utils.getSunday(seedDate);
@@ -108,7 +108,7 @@ public class CalendarRenderer {
                 weeks[rowIndex] = new Week(rowIndex);
             }
             if (weeks[rowIndex].days[i] != null) {
-                if (date.equals(CalendarViewAdapter.loadDate())) {
+                if (date.equals(CalendarViewAdapter.loadSelectedDate())) {
                     weeks[rowIndex].days[i].setState(State.SELECT);
                     weeks[rowIndex].days[i].setDate(date);
                 } else {
@@ -116,7 +116,7 @@ public class CalendarRenderer {
                     weeks[rowIndex].days[i].setDate(date);
                 }
             } else {
-                if (date.equals(CalendarViewAdapter.loadDate())) {
+                if (date.equals(CalendarViewAdapter.loadSelectedDate())) {
                     weeks[rowIndex].days[i] = new Day(State.SELECT, date, rowIndex, i);
                 } else {
                     weeks[rowIndex].days[i] = new Day(State.CURRENT_MONTH, date, rowIndex, i);
@@ -137,12 +137,25 @@ public class CalendarRenderer {
         int firstDayPosition = Utils.getFirstDayWeekPosition(
                 seedDate.year,
                 seedDate.month,
-                CalendarViewAdapter.weekArrayType);
+                attr.getWeekArrayType());
+        Log.e("ldf","firstDayPosition = " + firstDayPosition);
 
         int day = 0;
         for (int row = 0; row < Const.TOTAL_ROW; row++) {
             day = fillWeek(lastMonthDays, currentMonthDays, firstDayPosition, day, row);
         }
+    }
+
+    public CalendarDate getFirstDate() {
+        Week week = weeks[0];
+        Day day = week.days[0];
+        return day.getDate();
+    }
+
+    public CalendarDate getLastDate() {
+        Week week = weeks[weeks.length - 1];
+        Day day = week.days[week.days.length - 1];
+        return day.getDate();
     }
 
     /**
@@ -175,7 +188,7 @@ public class CalendarRenderer {
             weeks[row] = new Week(row);
         }
         if (weeks[row].days[col] != null) {
-            if (date.equals(CalendarViewAdapter.loadDate())) {
+            if (date.equals(CalendarViewAdapter.loadSelectedDate())) {
                 weeks[row].days[col].setDate(date);
                 weeks[row].days[col].setState(State.SELECT);
             } else {
@@ -183,7 +196,7 @@ public class CalendarRenderer {
                 weeks[row].days[col].setState(State.CURRENT_MONTH);
             }
         } else {
-            if (date.equals(CalendarViewAdapter.loadDate())) {
+            if (date.equals(CalendarViewAdapter.loadSelectedDate())) {
                 weeks[row].days[col] = new Day(State.SELECT, date, row, col);
             } else {
                 weeks[row].days[col] = new Day(State.CURRENT_MONTH, date, row, col);
